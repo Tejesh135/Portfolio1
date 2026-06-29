@@ -17,7 +17,8 @@ import { HeroProfile } from "@/components/HeroProfile";
 const roles = [
   "Python Developer",
   "Data Scientist",
-  "Data Analyst"
+  "Data Analyst",
+  "Machine Learning Engineer"
 ];
 
 

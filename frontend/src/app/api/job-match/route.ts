@@ -5,7 +5,7 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 
 const TEJESH_PROFILE = `
 Name: Tejesh
-Role: Python Developer, Data Scientist, Data Analyst
+Role: Python Developer, Data Scientist, Data Analyst, Machine Learning Engineer
 Experience: 
 - Data Science Intern at Rubixee (Jan 2026 - Present): Architected ML pipelines, Full Stack AI apps (Next.js/FastAPI), optimized inference times by 40%.
 - Data Science & AI Trainee at Datamites (Jan 2026 - Present): Scikit-Learn, TensorFlow, engineered large financial datasets, built recommendation engines.
