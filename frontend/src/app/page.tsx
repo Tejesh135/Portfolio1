@@ -15,11 +15,9 @@ import { Hero3D } from "@/components/Hero3D";
 import { HeroProfile } from "@/components/HeroProfile";
 
 const roles = [
-  "AI Engineer",
-  "Machine Learning Engineer",
-  "Data Scientist",
   "Python Developer",
-  "Generative AI Developer"
+  "Data Scientist",
+  "Data Analyst"
 ];
 
 
@@ -92,7 +90,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.5 }}
               className="text-gray-400 max-w-lg mb-10 text-lg font-light leading-relaxed"
             >
-              I build intelligent AI systems that transform data into real-world solutions.
+              I build data-driven solutions and scalable applications that solve real-world problems.
             </motion.p>
 
             <motion.div
