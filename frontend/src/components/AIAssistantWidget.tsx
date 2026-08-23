@@ -2,8 +2,42 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Mic, Send, X, Bot, User, Sparkles, Loader2, Volume2, VolumeX } from "lucide-react";
+import { Mic, Send, X, Bot, Sparkles, VolumeX } from "lucide-react";
 import clsx from "clsx";
+
+interface SpeechRecognitionResult {
+  transcript: string;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: {
+    [index: number]: SpeechRecognitionResult;
+  };
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+}
+
+interface ISpeechRecognition {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onstart: (() => void) | null;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+}
+
+interface WindowWithSpeech extends Window {
+  SpeechRecognition?: new () => ISpeechRecognition;
+  webkitSpeechRecognition?: new () => ISpeechRecognition;
+}
 
 export function AIAssistantWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,17 +91,19 @@ export function AIAssistantWidget() {
 
   // Handle Speech Recognition
   const toggleListening = () => {
-    if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+    const win = window as unknown as WindowWithSpeech;
+    const SpeechRecognition = win.SpeechRecognition || win.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
       alert("Speech recognition is not supported in this browser.");
       return;
     }
 
     if (isListening) {
       setIsListening(false);
-      return; // The recognition.onend will handle cleanup
+      return;
     }
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = 'en-US';
     recognition.interimResults = false;
@@ -78,14 +114,13 @@ export function AIAssistantWidget() {
       stopSpeaking();
     };
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setInput(transcript);
-      // Auto-send when speech is detected
       handleSend(transcript);
     };
 
-    recognition.onerror = (event: any) => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error("Speech recognition error", event.error);
       setIsListening(false);
     };
@@ -127,7 +162,8 @@ export function AIAssistantWidget() {
       } else {
         setMessages(prev => [...prev, { role: "ai", content: "I encountered an error. Please try again." }]);
       }
-    } catch (error: any) {
+    } catch (err: unknown) {
+      const error = err as Error;
       console.error("Fetch Error:", error);
       setMessages(prev => [...prev, { role: "ai", content: `Network error: ${error.message}` }]);
     } finally {

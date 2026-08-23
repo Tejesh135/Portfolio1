@@ -6,6 +6,40 @@ import { Mic, Send, Bot, StopCircle, ArrowLeft, BrainCircuit } from "lucide-reac
 import Link from "next/link";
 import clsx from "clsx";
 
+interface SpeechRecognitionResult {
+  transcript: string;
+}
+
+interface SpeechRecognitionResultList {
+  [index: number]: {
+    [index: number]: SpeechRecognitionResult;
+  };
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent {
+  error: string;
+}
+
+interface ISpeechRecognition {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onstart: (() => void) | null;
+  onresult: ((event: SpeechRecognitionEvent) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+}
+
+interface WindowWithSpeech extends Window {
+  SpeechRecognition?: new () => ISpeechRecognition;
+  webkitSpeechRecognition?: new () => ISpeechRecognition;
+}
+
 export default function InterviewPage() {
   const [messages, setMessages] = useState<{ role: "ai" | "user"; content: string }[]>([
     { role: "ai", content: "Hello! I am Tejesh's AI Digital Twin. I'm ready for a technical interview. What would you like to ask me?" }
@@ -49,7 +83,10 @@ export default function InterviewPage() {
   };
 
   const toggleListening = () => {
-    if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+    const win = window as unknown as WindowWithSpeech;
+    const SpeechRecognition = win.SpeechRecognition || win.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
       alert("Speech recognition is not supported in this browser.");
       return;
     }
@@ -59,7 +96,6 @@ export default function InterviewPage() {
       return;
     }
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = 'en-US';
     recognition.interimResults = false;
@@ -70,13 +106,13 @@ export default function InterviewPage() {
       stopSpeaking();
     };
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setInput(transcript);
       handleSend(transcript);
     };
 
-    recognition.onerror = (event: any) => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error("Speech recognition error", event.error);
       setIsListening(false);
     };
@@ -112,7 +148,7 @@ export default function InterviewPage() {
       } else {
         setMessages(prev => [...prev, { role: "ai", content: "I encountered an error. Please try again." }]);
       }
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { role: "ai", content: "Network error. Please try again." }]);
     } finally {
       setIsLoading(false);

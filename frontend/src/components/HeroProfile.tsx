@@ -1,70 +1,43 @@
 "use client";
 
-import { motion, useMotionValue, useTransform } from "framer-motion";
-import { MouseEvent } from "react";
+import { motion } from "framer-motion";
 
 export function HeroProfile() {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const rotateX = useTransform(y, [-100, 100], [10, -10]);
-  const rotateY = useTransform(x, [-100, 100], [-10, 10]);
-  
-  const lightX = useTransform(x, [-100, 100], [-20, 20]);
-  const lightY = useTransform(y, [-100, 100], [-20, 20]);
-
-  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(event.clientX - centerX);
-    y.set(event.clientY - centerY);
-  }
-
-  function handleMouseLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
   return (
     <motion.div 
-      initial={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }}
-      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-      transition={{ duration: 1.2, delay: 0.4 }}
-      className="flex-1 hidden lg:flex items-center justify-center relative w-full h-full perspective-[1000px]"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1.0, delay: 0.4 }}
+      className="flex-1 hidden md:flex items-center justify-center relative w-full h-full"
     >
-      <motion.div
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="relative w-80 h-80 rounded-full flex items-center justify-center transition-transform duration-100 ease-out"
-      >
-        {/* Dynamic back light */}
-        <motion.div 
-          className="absolute inset-0 rounded-full bg-blue-500/30 blur-[40px] -z-10"
-          style={{ x: lightX, y: lightY }}
-        />
+      {/* Blueprint container grid */}
+      <div className="relative p-2 border border-white/5 bg-black/40">
+        {/* Technical drafting crosshair corners */}
+        <span className="absolute -top-1.5 -left-1.5 w-4 h-[1px] bg-white/20" />
+        <span className="absolute -top-1.5 -left-1.5 w-[1px] h-4 bg-white/20" />
         
-        {/* Floating animation wrapper */}
-        <motion.div
-          animate={{ y: [-10, 10, -10] }}
-          transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-          className="relative w-full h-full rounded-full"
-        >
+        <span className="absolute -top-1.5 -right-1.5 w-4 h-[1px] bg-white/20" />
+        <span className="absolute -top-1.5 -right-1.5 w-[1px] h-4 bg-white/20" />
+        
+        <span className="absolute -bottom-1.5 -left-1.5 w-4 h-[1px] bg-white/20" />
+        <span className="absolute -bottom-1.5 -left-1.5 w-[1px] h-4 bg-white/20" />
+        
+        <span className="absolute -bottom-1.5 -right-1.5 w-4 h-[1px] bg-white/20" />
+        <span className="absolute -bottom-1.5 -right-1.5 w-[1px] h-4 bg-white/20" />
+
+        {/* Small drafting coordinate tags */}
+        <span className="absolute -top-5 left-0 font-mono text-[9px] text-gray-600 uppercase tracking-widest">[GRID_SEC_A]</span>
+        <span className="absolute -bottom-5 right-0 font-mono text-[9px] text-gray-600 uppercase tracking-widest">[RE_2026]</span>
+
+        {/* Profile Image container */}
+        <div className="w-56 h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 overflow-hidden bg-neutral-900 border border-white/10 relative">
           <img 
             src="/Tejesh_photo.jpg" 
-            alt="Tejesh" 
-            className="w-full h-full object-cover rounded-full z-10 border border-white/10 shadow-[0_0_50px_rgba(59,130,246,0.3)] transition-all duration-700 ease-in-out hover:shadow-[0_0_80px_rgba(59,130,246,0.6)]"
-            style={{ transform: "translateZ(50px)" }}
+            alt="Tejesh Poola" 
+            className="w-full h-full object-cover hover:scale-102 transition-transform duration-500 ease-in-out"
           />
-          
-          {/* Surface dynamic highlight */}
-          <motion.div 
-            className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/0 via-white/10 to-transparent pointer-events-none mix-blend-overlay"
-            style={{ x: lightX, y: lightY, transform: "translateZ(51px)" }}
-          />
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </motion.div>
   );
 }

@@ -4,13 +4,19 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/store/useStore";
 import { Briefcase, CheckCircle2, XCircle, Loader2, Sparkles } from "lucide-react";
-import clsx from "clsx";
+
+interface MatchResult {
+  matchScore: number;
+  summary: string;
+  matchingSkills: string[];
+  missingSkills: string[];
+}
 
 export function RecruiterWidget() {
   const isRecruiterMode = useStore((state) => state.isRecruiterMode);
   const [jobDescription, setJobDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<MatchResult | null>(null);
 
   if (!isRecruiterMode) return null;
 
@@ -83,7 +89,7 @@ export function RecruiterWidget() {
             </div>
 
             <p className="text-sm text-gray-300 leading-relaxed italic border-l-2 border-blue-500 pl-3">
-              "{result.summary}"
+              &quot;{result.summary}&quot;
             </p>
 
             <div>

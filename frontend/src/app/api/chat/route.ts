@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-// @ts-ignore
 import { GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { Document } from "@langchain/core/documents";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -118,7 +117,7 @@ export async function POST(req: Request) {
     const retriever = vectorStore.asRetriever(3);
     
     const docs = await retriever.invoke(message);
-    const contextStr = docs.map((doc: any) => doc.pageContent).join("\n\n");
+    const contextStr = docs.map((doc: Document) => doc.pageContent).join("\n\n");
     
     const llm = new ChatGoogleGenerativeAI({
         apiKey,

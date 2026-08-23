@@ -43,7 +43,7 @@ export function Chatbot() {
       } else {
         setMessages(prev => [...prev, { role: 'assistant', text: "Sorry, I couldn't process that right now." }]);
       }
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { role: 'assistant', text: "Network error. Please try again later." }]);
     } finally {
       setIsLoading(false);

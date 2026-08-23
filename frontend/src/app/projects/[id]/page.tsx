@@ -1,9 +1,8 @@
 import { getProjectById, projectData } from "@/lib/projects";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Code2, AlertTriangle, Database, Network, LineChart, Server, Rocket, PlayCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Code2, AlertTriangle, Database, Network, LineChart, PlayCircle } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 export function generateStaticParams() {
   return projectData.map((project) => ({
